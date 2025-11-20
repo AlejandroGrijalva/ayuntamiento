@@ -1,0 +1,50 @@
+@media (max-width: 900px) {
+    .hero {
+        grid-template-columns: 1fr;
+    }
+
+    main {
+        grid-template-columns: 1fr
+    }
+
+    .projects {
+        grid-template-columns: repeat(2, 1fr)
+    }
+
+    .docs {
+        grid-template-columns: 1fr
+    }
+
+    .projects {
+        grid-template-columns: repeat(2, 1fr)
+    }
+
+    .nav ul {
+        display: none
+    }
+
+    .container {
+        padding: 16px
+    }
+
+    .chat-modal {
+        right: 12px;
+        left: 12px;
+        width: auto
+    }
+}
+
+
+@media (max-width: 520px) {
+    .brand h1 {
+        font-size: 0.95rem
+    }
+
+    .projects {
+        grid-template-columns: 1fr
+    }
+
+    .quick-grid {
+        grid-template-columns: 1fr
+    }
+}
