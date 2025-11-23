@@ -13,11 +13,11 @@
         <!-- Menú (si luego lo ocupas, ya está preparado responsivo) -->
         <nav>
             <ul>
-                <li><a href="#inicio">Inicio</a></li>
-                <li><a href="#sesiones">Sesiones</a></li>
-                <li><a href="#convocatorias">Convocatorias</a></li>
-                <li><a href="#transparencia">Transparencia</a></li>
-                <li><a href="#planeacion">Planeación</a></li>
+                <li><a href="./index.php">Inicio</a></li>
+                <li><a href="./sesiones.php">Sesiones</a></li>
+                <li><a href="./convocatorias.php">Convocatorias</a></li>
+                <li><a href="./transparencia.php">Transparencia</a></li>
+                <li><a href="./Planeación.php">Planeación</a></li>
             </ul>
         </nav>
 
