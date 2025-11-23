@@ -227,23 +227,8 @@ include './includes.php'
     <?php include $footer ?>
 
     <!-- Chat mockup -->
-    <div class="chat-btn" id="chatBtn" aria-label="Abrir asistente">💬</div>
-    <div class="chat-modal" id="chatModal" role="dialog" aria-modal="true" aria-hidden="true">
-        <div class="chat-header">
-            <div style="width:40px;height:40px;border-radius:8px;background:rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center">IA</div>
-            <div>
-                <div style="font-weight:700">Asistente Ciudadano</div>
-                <div style="font-size:0.85rem;color:rgba(255,255,255,0.9)">Resuelve dudas sobre trámites</div>
-            </div>
-        </div>
-        <div class="chat-body" id="chatBody">
-            <div class="msg bot">Hola, ¿en qué puedo ayudarte hoy? Puedes probar: "¿Qué necesito para sacar licencia comercial?"</div>
-        </div>
-        <div class="chat-input">
-            <input id="chatInput" placeholder="Escribe tu pregunta..." aria-label="Mensaje" />
-            <button id="sendBtn">Enviar</button>
-        </div>
-    </div>
+    <?php include $chatbot ?>
+
 
     <script src="./assets/scripts/scripts.js"> </script>
 
