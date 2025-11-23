@@ -21,9 +21,7 @@
             </ul>
         </nav>
 
-        <div>
-            <a class="btn-primary" href="#">Acceder</a>
-        </div>
+        
 
         <!-- Botón móvil -->
         <div class="toggle-menu">☰</div>
