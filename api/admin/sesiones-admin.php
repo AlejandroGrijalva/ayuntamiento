@@ -46,7 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 }
 
-
+// Función para obtener todas las sesiones
 function obtenerSesiones() {
     $pdo = conectarBD();
     $stmt = $pdo->prepare("SELECT * FROM sesiones ORDER BY date DESC");
@@ -54,10 +54,10 @@ function obtenerSesiones() {
     return $stmt->fetchAll();
 }
 
-
+// Obtener las sesiones de la base de datos
 $sesiones = obtenerSesiones();
 
-
+// Obtener sesión para editar si se solicita
 $sesion_editar = null;
 if (isset($_GET['editar'])) {
     $pdo = conectarBD();
@@ -90,12 +90,12 @@ if (isset($_GET['editar'])) {
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Fecha</th>
-                            <th>Descripción</th>
-                            <th>Duración</th>
-                            <th>Transcrita</th>
-                            <th>Resumen</th>
-                            <th>Acciones</th>
+                            <th>Date</th>
+                            <th>Description</th>
+                            <th>Duration</th>
+                            <th>Transcribed</th>
+                            <th>Summary</th>
+                            <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -176,16 +176,19 @@ if (isset($_GET['editar'])) {
                             <textarea id="acta" name="acta" rows="8"
                                 placeholder="Write the complete session transcript here..."><?php echo $sesion_editar['acta'] ?? ''; ?></textarea>
                             <div class="audio-controls">
-                                <button type="button" class="btn-audio" onclick="textoAVoz()"
-                                    title="Listen to transcript">
-                                    🔊 Listen
+                                <button type="button" class="btn-voice" onclick="iniciarGrabacion()"
+                                    title="Start voice recording" id="btnGrabar">
+                                    🎤 Start Recording
                                 </button>
-                                <button type="button" class="btn-pause" onclick="pausarAudio()" title="Pause audio">
-                                    ⏸️ Pause
-                                </button>
-                                <button type="button" class="btn-stop" onclick="detenerAudio()" title="Stop audio">
+                                <button type="button" class="btn-stop" onclick="detenerGrabacion()"
+                                    title="Stop recording" id="btnDetener" disabled>
                                     ⏹️ Stop
                                 </button>
+                                <span id="estadoGrabacion" style="margin-left: 10px; font-weight: bold;"></span>
+                            </div>
+                            <div id="infoVoz" style="margin-top: 10px; font-size: 0.9rem; color: #666;">
+                                <p><strong>Nota:</strong> El reconocimiento de voz funciona mejor en Chrome/Edge con
+                                    conexión a internet</p>
                             </div>
                         </div>
 
@@ -211,63 +214,198 @@ if (isset($_GET['editar'])) {
             </div>
 
             <script>
-            let sintesisVoz = null;
-            let estaHablando = false;
+            // Variables para el reconocimiento de voz
+            let reconocimientoVoz = null;
+            let estaGrabando = false;
+            let textoTranscrito = '';
+
+            // Verificar compatibilidad al cargar la página
+            document.addEventListener('DOMContentLoaded', function() {
+                const btnGrabar = document.getElementById('btnGrabar');
+                const infoVoz = document.getElementById('infoVoz');
+
+                if (!verificarCompatibilidadVoz()) {
+                    btnGrabar.disabled = true;
+                    btnGrabar.title = 'Navegador no compatible con reconocimiento de voz';
+                    infoVoz.innerHTML =
+                        '<p style="color: red;"><strong>Error:</strong> Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.</p>';
+                }
+            });
+
+            function verificarCompatibilidadVoz() {
+                return ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
+            }
 
             function abrirModal() {
                 document.getElementById('modalSesion').style.display = 'block';
-                document.getElementById('formSesion').reset();
-                document.getElementById('sesionId').value = '';
                 document.getElementById('resumenStatus').textContent = '';
-                detenerAudio();
+                detenerGrabacion();
+                textoTranscrito = ''; // Resetear texto transcrito
             }
 
             function cerrarModal() {
                 document.getElementById('modalSesion').style.display = 'none';
-                detenerAudio();
+                detenerGrabacion();
             }
 
             function escucharSesion(id) {
                 alert('Playing audio for session ' + id);
             }
 
-            function textoAVoz() {
-                const texto = document.getElementById('acta').value;
-                if (!texto.trim()) {
-                    alert('No text to convert to speech');
+            function iniciarGrabacion() {
+                const estado = document.getElementById('estadoGrabacion');
+                const textarea = document.getElementById('acta');
+                const btnGrabar = document.getElementById('btnGrabar');
+                const btnDetener = document.getElementById('btnDetener');
+
+                // Resetear texto transcrito si es una nueva grabación
+                if (!estaGrabando) {
+                    textoTranscrito = textarea.value || '';
+                }
+
+                if (!verificarCompatibilidadVoz()) {
+                    estado.textContent = 'Error: Navegador no compatible';
+                    estado.style.color = 'red';
                     return;
                 }
 
-                if (sintesisVoz && estaHablando) {
-                    window.speechSynthesis.cancel();
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+                try {
+                    reconocimientoVoz = new SpeechRecognition();
+                } catch (error) {
+                    estado.textContent = 'Error al crear reconocimiento: ' + error.message;
+                    estado.style.color = 'red';
+                    return;
                 }
 
-                sintesisVoz = new SpeechSynthesisUtterance(texto);
-                sintesisVoz.lang = 'es-ES';
-                sintesisVoz.rate = 0.9;
-                sintesisVoz.pitch = 1;
+                // Configurar el reconocimiento
+                reconocimientoVoz.continuous = true;
+                reconocimientoVoz.interimResults = true;
+                reconocimientoVoz.lang = 'es-ES'; // Español
+                reconocimientoVoz.maxAlternatives = 1;
 
-                sintesisVoz.onstart = function() {
-                    estaHablando = true;
+                reconocimientoVoz.onstart = function() {
+                    estaGrabando = true;
+                    estado.textContent = '🎤 Grabando... Habla ahora';
+                    estado.style.color = 'green';
+                    btnGrabar.disabled = true;
+                    btnDetener.disabled = false;
                 };
 
-                sintesisVoz.onend = function() {
-                    estaHablando = false;
+                reconocimientoVoz.onresult = function(event) {
+                    let textoIntermedio = '';
+
+                    for (let i = event.resultIndex; i < event.results.length; i++) {
+                        const transcript = event.results[i][0].transcript;
+
+                        if (event.results[i].isFinal) {
+                            textoTranscrito += transcript + ' ';
+                        } else {
+                            textoIntermedio += transcript;
+                        }
+                    }
+
+                    // Actualizar el textarea con el texto transcrito
+                    textarea.value = textoTranscrito + textoIntermedio;
+
+                    // Auto-scroll al final del textarea
+                    textarea.scrollTop = textarea.scrollHeight;
                 };
 
-                window.speechSynthesis.speak(sintesisVoz);
-            }
+                reconocimientoVoz.onerror = function(event) {
+                    console.error('Error en reconocimiento de voz:', event.error);
 
-            function pausarAudio() {
-                if (estaHablando) {
-                    window.speechSynthesis.pause();
-                    estaHablando = false;
+                    let mensajeError = 'Error: ';
+                    switch (event.error) {
+                        case 'network':
+                            mensajeError += 'Problema de red. Verifica tu conexión a internet.';
+                            break;
+                        case 'not-allowed':
+                            mensajeError += 'Permiso de micrófono denegado.';
+                            break;
+                        case 'service-not-allowed':
+                            mensajeError += 'Servicio de reconocimiento no disponible.';
+                            break;
+                        default:
+                            mensajeError += event.error;
+                    }
+
+                    estado.textContent = mensajeError;
+                    estado.style.color = 'red';
+                    estaGrabando = false;
+                    btnGrabar.disabled = false;
+                    btnDetener.disabled = true;
+                };
+
+                reconocimientoVoz.onend = function() {
+                    if (estaGrabando) {
+                        // Si aún está grabando, reiniciar el reconocimiento automáticamente
+                        try {
+                            reconocimientoVoz.start();
+                        } catch (error) {
+                            estado.textContent = 'Error al reiniciar grabación: ' + error.message;
+                            estado.style.color = 'red';
+                            estaGrabando = false;
+                            btnGrabar.disabled = false;
+                            btnDetener.disabled = true;
+                        }
+                    } else {
+                        btnGrabar.disabled = false;
+                        btnDetener.disabled = true;
+                    }
+                };
+
+                // Solicitar permiso de micrófono primero
+                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                    navigator.mediaDevices.getUserMedia({
+                            audio: true
+                        })
+                        .then(function(stream) {
+                            // Permiso concedido, iniciar reconocimiento
+                            try {
+                                reconocimientoVoz.start();
+                                estado.textContent = 'Solicitando permiso de micrófono...';
+                                estado.style.color = 'blue';
+                            } catch (error) {
+                                estado.textContent = 'Error al iniciar: ' + error.message;
+                                estado.style.color = 'red';
+                            }
+                        })
+                        .catch(function(error) {
+                            estado.textContent = 'Permiso de micrófono denegado: ' + error.message;
+                            estado.style.color = 'red';
+                            btnGrabar.disabled = false;
+                            btnDetener.disabled = true;
+                        });
+                } else {
+                    // Navegador antiguo, intentar directamente
+                    try {
+                        reconocimientoVoz.start();
+                        estado.textContent = 'Iniciando reconocimiento...';
+                        estado.style.color = 'blue';
+                    } catch (error) {
+                        estado.textContent = 'Error al iniciar: ' + error.message;
+                        estado.style.color = 'red';
+                        btnGrabar.disabled = false;
+                        btnDetener.disabled = true;
+                    }
                 }
             }
 
-            function detenerAudio() {
-                window.speechSynthesis.cancel();
-                estaHablando = false;
+            function detenerGrabacion() {
+                if (reconocimientoVoz && estaGrabando) {
+                    try {
+                        reconocimientoVoz.stop();
+                        estaGrabando = false;
+                        document.getElementById('estadoGrabacion').textContent = 'Grabación detenida';
+                        document.getElementById('estadoGrabacion').style.color = 'gray';
+                        document.getElementById('btnGrabar').disabled = false;
+                        document.getElementById('btnDetener').disabled = true;
+                    } catch (error) {
+                        console.error('Error al detener:', error);
+                    }
+                }
             }
 
             function generarResumen() {
