@@ -1,356 +1,238 @@
 :root {
-    --verde-oscuro: #0A5B2F;
-    --dorado: #C9A231;
-    --verde-claro: #3A8A54;
-    --fondo: #FFFFFF;
-    --texto: #1C1C1C;
-    --muted: #6B6B6B;
-    --card-shadow: 0 6px 18px rgba(10, 91, 47, 0.08);
-    --radius: 12px;
-    --max-width: 1100px;
+  --verde-oscuro: #0a5b2f;
+  --dorado: #c9a231;
+  --verde-claro: #3a8a54;
+  --fondo: #ffffff;
+  --texto: #1c1c1c;
+  --muted: #6b6b6b;
+  --card-shadow: 0 6px 18px rgba(10, 91, 47, 0.08);
+  --radius: 12px;
+  --max-width: 1100px;
 }
 
 * {
-    box-sizing: border-box
+  box-sizing: border-box;
 }
 
 html,
 body {
-    height: 100%;
-    
-    margin: 0;
-    font-family: 'Montserrat', 'Roboto', sans-serif;
-    background: var(--fondo);
-    color: var(--texto)
+  height: 100%;
+  min-height: 100vh;
+  margin: 0;
+  font-family: "Montserrat", "Roboto", sans-serif;
+  background: var(--fondo);
+  color: var(--texto);
 }
 
 a {
-    color: inherit;
-    text-decoration: none
+  color: inherit;
+  text-decoration: none;
 }
 
-/* Header / Navbar */
 .container {
-    max-width: var(--max-width);
-    margin: 0 auto;
-    padding: 24px
-}
-
-
-
-/* Hero */
-.hero {
-    padding: 40px 0;
-    display: grid;
-    grid-template-columns: 1fr 360px;
-    gap: 28px;
-    align-items: start
-}
-
-.hero-card {
-    background: white;
-    border-radius: var(--radius);
-    box-shadow: var(--card-shadow);
-    padding: 26px
-}
-
-.hero h2 {
-    margin: 0 0 8px 0;
-    font-size: 1.6rem
-}
-
-.hero p {
-    margin: 0;
-    color: var(--muted)
-}
-
-.quick-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-top: 18px
-}
-
-.quick {
-    background: linear-gradient(180deg, #fff, #f7f9f7);
-    padding: 12px;
-    border-radius: 10px;
-    border: 1px solid rgba(0, 0, 0, 0.03);
-    display: flex;
-    gap: 12px;
-    align-items: center
-}
-
-.quick .icon {
-    width: 44px;
-    height: 44px;
-    border-radius: 8px;
-    background: var(--verde-claro);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: white;
-    font-weight: 700
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 24px;
 }
 
 main.container {
-    display: flex;
-    flex-direction: column; /* apilar verticalmente */
-    align-items: center;    /* centrar horizontalmente */
-    padding: 18px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 18px 0;
 }
 
-/* Si quieres que las tarjetas no ocupen todo el ancho */
-main.container .card {
-    max-width: 700px; /* limita el ancho de las tarjetas */
-    width: 100%;      /* se adapta al ancho disponible */
-    margin-bottom: 20px; /* espacio entre tarjetas */
+main.container > .card {
+  max-width: 700px;
+  width: 100%;
+  margin-bottom: 20px;
 }
 
-/* Sesiones, convocatorias, proyectos, etc. dentro de la card */
-.sessions-list,
+.card {
+  background: white;
+  border-radius: var(--radius);
+  box-shadow: var(--card-shadow);
+  padding: 16px;
+}
+
+.sesiones-page > .sessions-list,
 .conv-list,
 .projects,
-.calendar,
 .docs {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* centrar elementos dentro de cada sección */
-    gap: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
 }
 
-/* Opcional: centrar el texto de títulos */
-h3, h4, p.subtitle {
-    text-align: center;
-}
-/* Sesiones: calendario simple */
-.calendar {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px
+h3,
+h4,
+p.subtitle {
+  text-align: center;
 }
 
-.calendar .next-session {
-    display: flex;
-    flex-direction: column;
-    gap: 8px
-}
-
-.calendar .mini {
-    background: linear-gradient(180deg, #fff, #fbfdfb);
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px solid rgba(0, 0, 0, 0.03)
-}
-
-/* Convocatorias list */
-.conv-list {
-    display: flex;
-    flex-direction: column;
-    gap: 10px
-}
-
-.conv-item {
-    display: flex;
-    justify-content: space-between;
-    gap: 12px;
-    padding: 12px;
-    border-radius: 8px;
-    border-left: 6px solid var(--verde-claro);
-    background: #fff
-}
-
-/* Transparencia */
-.docs {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px
-}
-
-.doc {
-    padding: 12px;
-    border-radius: 8px;
-    border: 1px dashed rgba(10, 91, 47, 0.08);
-    display: flex;
-    justify-content: space-between;
-    align-items: center
-}
-
-/* Planeación */
-.projects {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 12px
-}
-
-.project {
-    padding: 12px;
-    border-radius: 10px;
-    background: linear-gradient(180deg, #fff, #f9fff6);
-    border: 1px solid rgba(58, 138, 84, 0.06)
-}
-
-/* Right column */
-/* Centrar todo el main */
-main.container {
-    display: flex;
-    flex-direction: column; /* apilar verticalmente */
-    align-items: center;    /* centrar horizontalmente */
-    padding: 18px 0;
-}
-
-/* Limitar ancho de las tarjetas y centrar contenido */
-.card.sesiones-page,
-.card {
-    max-width: 700px; /* ancho fijo máximo */
-    width: 100%;
-    margin-bottom: 20px;
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* centra todo el contenido interno */
-}
-
-/* Convocatorias */
-.conv-list {
-    display: flex;
-    flex-direction: column;
-    align-items: center; /* centra las convocatorias */
-    gap: 10px;
-    width: 100%;
-}
-
-/* Cada ítem de convocatoria */
-.conv-item {
-    display: flex;
-    justify-content: center; /* centra los textos y botones */
-    gap: 12px;
-    padding: 12px;
-    border-radius: 8px;
-    border-left: 6px solid var(--verde-claro);
-    background: #fff;
-    width: 100%; /* que ocupe todo el ancho de la card */
-    max-width: 650px; /* opcional, para no estirarse demasiado */
-}
-
-/* Opcional: centrar texto */
-.conv-item span {
-    text-align: center;
-}
-
-/* Botones */
-.conv-item a, .conv-item button {
-    margin: 0; /* evita que se separen */
-}/* Hero */
-.container > .hero-card > h2 {
-    font-size: 2rem;
-    margin-bottom: 12px;
-}
-
-.container > .hero-card > p {
-    font-size: 1rem;
-    margin-bottom: 20px;
-}
-
-.container > .hero-card > .quick-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-    gap: 12px;
-}
-
-.container > .hero-card > .quick-grid > .quick {
-    display: flex;
-    gap: 8px;
-    padding: 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    background: var(--blanco);
-}
-
-.container > .hero-card > .quick-grid > .quick > .icon {
-    font-weight: 700;
-    font-size: 1.2rem;
-}
-
-.container > .hero-card > .quick-grid > .quick > .title {
-    font-weight: 600;
-}
-
-.container > .hero-card > .quick-grid > .quick > .subtitle {
-    font-size: 0.85rem;
-    color: var(--muted);
-}
-
-/* Sidebar */
-.container > .hero-card > .sidebar {
-    width: 100%;
-    max-width: 360px;
-}
-
-/* Cards */
-.card {
-    background: var(--blanco);
-    border-radius: 12px;
-    padding: 16px;
-    margin-bottom: 14px;
-}
-
-/* Sesiones */
+/* Sesiones con mismo ancho */
 .sesiones-page > .sessions-list > .session {
-    margin-bottom: 12px;
+  width: 100%;
+  max-width: 650px;
+  margin-bottom: 12px;
 }
 
-.votaciones > .item {
-    display: flex;
-    justify-content: space-between;
+.sesiones-page > .sessions-list > .session > .votaciones > .item {
+  display: flex;
+  justify-content: space-between;
 }
 
 .status.approved {
-    color: var(--verde-oscuro);
-    font-weight: 700;
+  color: var(--verde-oscuro);
+  font-weight: 700;
 }
 
 .status.pending {
-    color: var(--dorado);
-    font-weight: 700;
+  color: var(--dorado);
+  font-weight: 700;
+}
+/* Sesiones - indicadores de grabación */
+.sesiones-page > .sessions-list > .session {
+  width: 100%;
+  max-width: 650px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.session-grabada::before {
+  content: "🎥 Grabada";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--verde-claro);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+
+.session-pendiente::before {
+  content: "⏳ Por transcribir";
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: var(--dorado);
+  color: white;
+  padding: 4px 8px;
+  border-radius: 6px;
+  font-size: 0.8rem;
+  font-weight: 600;
+}
+/* Proceso de transcripción */
+.proceso-transcripcion > .paso {
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+}
+
+.proceso-transcripcion > .paso:last-child {
+  border-bottom: none;
+}
+
+.session-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-top: 10px;
+}
+
+.text-muted {
+  color: var(--muted);
+  font-style: italic;
 }
 
 /* Convocatorias */
 .conv-list > .conv-item {
-    display: flex;
-    justify-content: space-between;
-    padding: 12px;
-    border-radius: 8px;
-    margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 6px solid var(--verde-claro);
+  background: #fff;
+  width: 100%;
+  max-width: 650px;
 }
 
 .conv-list > .conv-item > .actions > .btn-participar {
-    background: var(--dorado);
-    border: none;
-    padding: 8px 10px;
-    border-radius: 8px;
-    font-weight: 700;
+  background: var(--dorado);
+  border: none;
+  padding: 8px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  margin-left: 30px;
 }
 
 /* Planeación */
+.projects {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+}
+
 .projects > .project {
-    margin-bottom: 10px;
+  padding: 12px;
+  border-radius: 10px;
+  background: linear-gradient(180deg, #fff, #f9fff6);
+  border: 1px solid rgba(58, 138, 84, 0.06);
 }
 
 /* Transparencia */
-.docs > .doc {
-    display: flex;
-    justify-content: space-between;
-    padding: 8px 0;
+.docs {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
 }
 
-/* Botones de regreso */
-.btn-back {
-    display: inline-block;
-    margin-top: 12px;
-    font-weight: 700;
-    color: var(--verde-oscuro);
-    text-decoration: none;
+.docs > .doc {
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px dashed rgba(10, 91, 47, 0.08);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
-.btn-participar{
-    margin-left: 30px;
+
+.btn-back {
+  display: inline-block;
+  margin-top: 12px;
+  font-weight: 700;
+  color: var(--verde-oscuro);
+  text-decoration: none;
+}
+/* Trámites */
+.tramites-page > .tramites-list {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+}
+
+.tramites-page > .tramites-list > .tramite-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 6px solid var(--dorado);
+  background: #fff;
+  width: 100%;
+  max-width: 650px;
+}
+
+.tramites-page > .tramites-list > .tramite-item > .actions > .btn-tramite {
+  background: var(--verde-claro);
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  color: white;
 }

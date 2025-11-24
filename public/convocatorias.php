@@ -43,5 +43,7 @@
 
     <?php include $footer ?>
     <?php include $chatbot ?>
+    <script src="./assets/scripts/scripts.js"> </script>
+
 </body>
 </html>
