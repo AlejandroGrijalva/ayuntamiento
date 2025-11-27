@@ -78,6 +78,7 @@ if (isset($_GET['editar'])) {
 
 <body>
     <div class="admin-container">
+        <!-- Header -->
         <?php include '../includes/admin-header.php'; ?>
 
         <main class="admin-main">
@@ -90,12 +91,12 @@ if (isset($_GET['editar'])) {
                 <table class="data-table">
                     <thead>
                         <tr>
-                            <th>Date</th>
-                            <th>Description</th>
-                            <th>Duration</th>
-                            <th>Transcribed</th>
-                            <th>Summary</th>
-                            <th>Actions</th>
+                            <th>Fecha</th>
+                            <th>Descripción</th>
+                            <th>Duración</th>
+                            <th>Transcrita</th>
+                            <th>Resumen</th>
+                            <th>Acciones</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -115,12 +116,12 @@ if (isset($_GET['editar'])) {
                                 ?>
                             </td>
                             <td class="actions">
-                                <a href="?editar=<?php echo $sesion['id']; ?>" class="btn-sm btn-edit">Edit</a>
+                                <a href="?editar=<?php echo $sesion['id']; ?>" class="btn-sm btn-edit">Editar</a>
                                 <form method="post" style="display:inline;">
                                     <input type="hidden" name="action" value="eliminar">
                                     <input type="hidden" name="id" value="<?php echo $sesion['id']; ?>">
                                     <button type="submit" class="btn-sm btn-danger"
-                                        onclick="return confirm('Are you sure you want to delete this session?')">Delete</button>
+                                        onclick="return confirm('¿Estas seguro que quieres eliminar esta sesion?')">Eliminar</button>
                                 </form>
                                 <?php if (!empty($sesion['acta'])): ?>
                                 <button class="btn-sm btn-audio"
@@ -136,9 +137,10 @@ if (isset($_GET['editar'])) {
             </div>
 
             <!-- Modal para crear/editar -->
-            <div id="modalSesion" class="modal" style="<?php echo $sesion_editar ? 'display:block;' : ''; ?>">
+            <div id="modalSesion" class="modal"
+                style="<?php echo $sesion_editar ? 'display:block;' : ''; ?> margin-top: -2rem;">
                 <div class="modal-content">
-                    <h2><?php echo $sesion_editar ? 'Edit Session' : 'New Session'; ?></h2>
+                    <h2><?php echo $sesion_editar ? 'Editar Sesión' : 'Nueva Sesión'; ?></h2>
                     <form method="post">
                         <input type="hidden" name="action" value="<?php echo $sesion_editar ? 'editar' : 'crear'; ?>">
                         <?php if ($sesion_editar): ?>
@@ -146,19 +148,19 @@ if (isset($_GET['editar'])) {
                         <?php endif; ?>
 
                         <div class="form-group">
-                            <label for="date">Date:</label>
+                            <label for="date">Fecha:</label>
                             <input type="date" id="date" name="date" value="<?php echo $sesion_editar['date'] ?? ''; ?>"
                                 required>
                         </div>
 
                         <div class="form-group">
-                            <label for="description">Description:</label>
+                            <label for="description">Descripción:</label>
                             <textarea id="description" name="description"
                                 required><?php echo $sesion_editar['description'] ?? ''; ?></textarea>
                         </div>
 
                         <div class="form-group">
-                            <label for="duration">Duration:</label>
+                            <label for="duration">Duración</label>
                             <input type="text" id="duration" name="duration"
                                 value="<?php echo $sesion_editar['duration'] ?? ''; ?>" required>
                         </div>
@@ -167,22 +169,22 @@ if (isset($_GET['editar'])) {
                             <label for="transcribed">
                                 <input type="checkbox" id="transcribed" name="transcribed"
                                     <?php echo ($sesion_editar['transcribed'] ?? false) ? 'checked' : ''; ?>>
-                                Transcribed
+                                Transcrita
                             </label>
                         </div>
 
                         <div class="form-group">
-                            <label for="acta">Complete Transcript:</label>
+                            <label for="acta">Completar Transcripción:</label>
                             <textarea id="acta" name="acta" rows="8"
                                 placeholder="Write the complete session transcript here..."><?php echo $sesion_editar['acta'] ?? ''; ?></textarea>
                             <div class="audio-controls">
-                                <button type="button" class="btn-voice" onclick="iniciarGrabacion()"
-                                    title="Start voice recording" id="btnGrabar">
-                                    🎤 Start Recording
+                                <button type="button" style="margin-bottom: 10px" class="btn-voice"
+                                    onclick="iniciarGrabacion()" title="Start voice recording" id="btnGrabar">
+                                    Compenzar a grabar
                                 </button>
                                 <button type="button" class="btn-stop" onclick="detenerGrabacion()"
                                     title="Stop recording" id="btnDetener" disabled>
-                                    ⏹️ Stop
+                                    Detener grabación
                                 </button>
                                 <span id="estadoGrabacion" style="margin-left: 10px; font-weight: bold;"></span>
                             </div>
@@ -194,257 +196,26 @@ if (isset($_GET['editar'])) {
 
                         <div class="form-group">
                             <label for="summary">
-                                AI Summary:
-                                <button type="button" class="btn-resumir" onclick="generarResumen()"
-                                    style="margin-left: 10px;">
-                                    🤖 Generate Summary
+                                Resumen de IA
+                                <button type="button" onclick="resumir()"
+                                    style="margin-left: 10px; background-color: #4caF50; padding: 5px;border: none; border-radius: 5px">
+                                    Generar Resumen
                                 </button>
                             </label>
                             <textarea id="summary" name="summary" rows="4"
-                                placeholder="The AI-generated summary will appear here..."><?php echo $sesion_editar['summary'] ?? ''; ?></textarea>
+                                placeholder="El resumen por ia estara aqui"></textarea>
                             <div class="resumen-status" id="resumenStatus"></div>
                         </div>
 
                         <div class="form-actions">
-                            <button type="submit" class="btn-primary">Save Session</button>
-                            <a href="sesiones-admin.php" class="btn-secondary">Cancel</a>
+                            <button type="submit" class="btn-primary">Guardar Sesión</button>
+                            <a href="sesiones-admin.php" class="btn-secondary">Cancelar</a>
                         </div>
                     </form>
                 </div>
             </div>
 
             <script>
-            // Variables para el reconocimiento de voz
-            let reconocimientoVoz = null;
-            let estaGrabando = false;
-            let textoTranscrito = '';
-
-            // Verificar compatibilidad al cargar la página
-            document.addEventListener('DOMContentLoaded', function() {
-                const btnGrabar = document.getElementById('btnGrabar');
-                const infoVoz = document.getElementById('infoVoz');
-
-                if (!verificarCompatibilidadVoz()) {
-                    btnGrabar.disabled = true;
-                    btnGrabar.title = 'Navegador no compatible con reconocimiento de voz';
-                    infoVoz.innerHTML =
-                        '<p style="color: red;"><strong>Error:</strong> Tu navegador no soporta reconocimiento de voz. Usa Chrome o Edge.</p>';
-                }
-            });
-
-            function verificarCompatibilidadVoz() {
-                return ('webkitSpeechRecognition' in window) || ('SpeechRecognition' in window);
-            }
-
-            function abrirModal() {
-                document.getElementById('modalSesion').style.display = 'block';
-                document.getElementById('resumenStatus').textContent = '';
-                detenerGrabacion();
-                textoTranscrito = ''; // Resetear texto transcrito
-            }
-
-            function cerrarModal() {
-                document.getElementById('modalSesion').style.display = 'none';
-                detenerGrabacion();
-            }
-
-            function escucharSesion(id) {
-                alert('Playing audio for session ' + id);
-            }
-
-            function iniciarGrabacion() {
-                const estado = document.getElementById('estadoGrabacion');
-                const textarea = document.getElementById('acta');
-                const btnGrabar = document.getElementById('btnGrabar');
-                const btnDetener = document.getElementById('btnDetener');
-
-                // Resetear texto transcrito si es una nueva grabación
-                if (!estaGrabando) {
-                    textoTranscrito = textarea.value || '';
-                }
-
-                if (!verificarCompatibilidadVoz()) {
-                    estado.textContent = 'Error: Navegador no compatible';
-                    estado.style.color = 'red';
-                    return;
-                }
-
-                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-                try {
-                    reconocimientoVoz = new SpeechRecognition();
-                } catch (error) {
-                    estado.textContent = 'Error al crear reconocimiento: ' + error.message;
-                    estado.style.color = 'red';
-                    return;
-                }
-
-                // Configurar el reconocimiento
-                reconocimientoVoz.continuous = true;
-                reconocimientoVoz.interimResults = true;
-                reconocimientoVoz.lang = 'es-ES'; // Español
-                reconocimientoVoz.maxAlternatives = 1;
-
-                reconocimientoVoz.onstart = function() {
-                    estaGrabando = true;
-                    estado.textContent = '🎤 Grabando... Habla ahora';
-                    estado.style.color = 'green';
-                    btnGrabar.disabled = true;
-                    btnDetener.disabled = false;
-                };
-
-                reconocimientoVoz.onresult = function(event) {
-                    let textoIntermedio = '';
-
-                    for (let i = event.resultIndex; i < event.results.length; i++) {
-                        const transcript = event.results[i][0].transcript;
-
-                        if (event.results[i].isFinal) {
-                            textoTranscrito += transcript + ' ';
-                        } else {
-                            textoIntermedio += transcript;
-                        }
-                    }
-
-                    // Actualizar el textarea con el texto transcrito
-                    textarea.value = textoTranscrito + textoIntermedio;
-
-                    // Auto-scroll al final del textarea
-                    textarea.scrollTop = textarea.scrollHeight;
-                };
-
-                reconocimientoVoz.onerror = function(event) {
-                    console.error('Error en reconocimiento de voz:', event.error);
-
-                    let mensajeError = 'Error: ';
-                    switch (event.error) {
-                        case 'network':
-                            mensajeError += 'Problema de red. Verifica tu conexión a internet.';
-                            break;
-                        case 'not-allowed':
-                            mensajeError += 'Permiso de micrófono denegado.';
-                            break;
-                        case 'service-not-allowed':
-                            mensajeError += 'Servicio de reconocimiento no disponible.';
-                            break;
-                        default:
-                            mensajeError += event.error;
-                    }
-
-                    estado.textContent = mensajeError;
-                    estado.style.color = 'red';
-                    estaGrabando = false;
-                    btnGrabar.disabled = false;
-                    btnDetener.disabled = true;
-                };
-
-                reconocimientoVoz.onend = function() {
-                    if (estaGrabando) {
-                        // Si aún está grabando, reiniciar el reconocimiento automáticamente
-                        try {
-                            reconocimientoVoz.start();
-                        } catch (error) {
-                            estado.textContent = 'Error al reiniciar grabación: ' + error.message;
-                            estado.style.color = 'red';
-                            estaGrabando = false;
-                            btnGrabar.disabled = false;
-                            btnDetener.disabled = true;
-                        }
-                    } else {
-                        btnGrabar.disabled = false;
-                        btnDetener.disabled = true;
-                    }
-                };
-
-                // Solicitar permiso de micrófono primero
-                if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-                    navigator.mediaDevices.getUserMedia({
-                            audio: true
-                        })
-                        .then(function(stream) {
-                            // Permiso concedido, iniciar reconocimiento
-                            try {
-                                reconocimientoVoz.start();
-                                estado.textContent = 'Solicitando permiso de micrófono...';
-                                estado.style.color = 'blue';
-                            } catch (error) {
-                                estado.textContent = 'Error al iniciar: ' + error.message;
-                                estado.style.color = 'red';
-                            }
-                        })
-                        .catch(function(error) {
-                            estado.textContent = 'Permiso de micrófono denegado: ' + error.message;
-                            estado.style.color = 'red';
-                            btnGrabar.disabled = false;
-                            btnDetener.disabled = true;
-                        });
-                } else {
-                    // Navegador antiguo, intentar directamente
-                    try {
-                        reconocimientoVoz.start();
-                        estado.textContent = 'Iniciando reconocimiento...';
-                        estado.style.color = 'blue';
-                    } catch (error) {
-                        estado.textContent = 'Error al iniciar: ' + error.message;
-                        estado.style.color = 'red';
-                        btnGrabar.disabled = false;
-                        btnDetener.disabled = true;
-                    }
-                }
-            }
-
-            function detenerGrabacion() {
-                if (reconocimientoVoz && estaGrabando) {
-                    try {
-                        reconocimientoVoz.stop();
-                        estaGrabando = false;
-                        document.getElementById('estadoGrabacion').textContent = 'Grabación detenida';
-                        document.getElementById('estadoGrabacion').style.color = 'gray';
-                        document.getElementById('btnGrabar').disabled = false;
-                        document.getElementById('btnDetener').disabled = true;
-                    } catch (error) {
-                        console.error('Error al detener:', error);
-                    }
-                }
-            }
-
-            function generarResumen() {
-                const textoCompleto = document.getElementById('acta').value;
-                if (!textoCompleto.trim()) {
-                    alert('No text to summarize');
-                    return;
-                }
-
-                const statusElement = document.getElementById('resumenStatus');
-                statusElement.textContent = '🤖 AI processing text...';
-                statusElement.style.color = '#2196F3';
-
-                // Simulación de llamada a IA
-                setTimeout(() => {
-                    const resumenGenerado = simularResumenIA(textoCompleto);
-                    document.getElementById('summary').value = resumenGenerado;
-                    statusElement.textContent = '✅ Summary generated successfully';
-                    statusElement.style.color = '#4CAF50';
-                }, 2000);
-            }
-
-            function simularResumenIA(texto) {
-                // Simulación básica - en producción conectarías a una API real
-                const oraciones = texto.split('.').filter(oracion => oracion.trim().length > 0);
-                const resumen = oraciones.slice(0, 3).join('. ') + '.';
-
-                return `AI SUMMARY:\n\n${resumen}\n\n[This is a simulated summary]`;
-            }
-
-            // Cerrar modal si se hace clic fuera
-            window.onclick = function(event) {
-                var modal = document.getElementById('modalSesion');
-                if (event.target == modal) {
-                    window.location.href = 'sesiones-admin.php';
-                }
-            }
-
-            // Si hay sesión para editar, abrir el modal automáticamente
             <?php if ($sesion_editar): ?>
             document.addEventListener('DOMContentLoaded', function() {
                 document.getElementById('modalSesion').style.display = 'block';
@@ -453,6 +224,8 @@ if (isset($_GET['editar'])) {
             </script>
         </main>
     </div>
+    <script src="../js/admin.js"></script>
+    <script src="../js/apiresumen.js"></script>
 </body>
 
 </html>
