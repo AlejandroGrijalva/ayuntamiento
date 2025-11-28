@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyAVMP25swoHvfyurDJrOui4s_2oQQFWiuQ"
+const API_KEY = "AIzaSyA8U1afqiHTJcUGGCHaEiyW6GkhFUz9uk8"
 
 async function resumir() {
   const texto = document.getElementById("acta").value

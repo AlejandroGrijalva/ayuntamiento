@@ -1,4 +1,20 @@
-<?php include './includes.php' ?>
+<?php 
+include './includes.php'; 
+include '../api/includes/db.php';
+// Asegúrate de que la función obtenerSesiones() esté disponible (usualmente en includes.php)
+// Si no la has incluido ahí, descomenta las líneas de abajo o mueve tu función aquí.
+
+function obtenerSesiones() {
+    $pdo = conectarBD(); // Asumiendo que tienes esta función de conexión
+    $stmt = $pdo->prepare("SELECT * FROM sesiones ORDER BY date DESC");
+    $stmt->execute();
+    return $stmt->fetchAll();
+}
+
+
+// Obtenemos los datos reales
+$sesiones = obtenerSesiones();
+?>
 
 <!doctype html>
 <html lang="es">
@@ -21,28 +37,46 @@
 
             <div class="sessions-list">
                 <?php
-                $sesiones = [
-                    ["28 Nov 2025", "Orden del día: 5 puntos. Duración estimada: 2 horas", "grabada", "transcrita"],
-                    ["15 Nov 2025", "Orden del día: 4 puntos. Duración estimada: 1.5 horas", "grabada", "transcrita"],
-                    ["01 Nov 2025", "Orden del día: 6 puntos. Duración estimada: 2.5 horas", "grabada", "pendiente"],
-                    ["20 Oct 2025", "Orden del día: 3 puntos. Duración estimada: 1 hora", "grabada", "transcrita"],
-                    ["05 Oct 2025", "Orden del día: 7 puntos. Duración estimada: 3 horas", "grabada", "transcrita"]
-                ];
-                
-                foreach($sesiones as $sesion) {
-                    $clase = $sesion[3] == 'transcrita' ? 'session-grabada' : 'session-pendiente';
-                    echo '<div class="session card '.$clase.'">';
-                    echo '<h4>Sesión - '.$sesion[0].'</h4>';
-                    echo '<p class="subtitle">'.$sesion[1].'</p>';
-                    echo '<div class="session-actions">';
-                    echo '<a href="#" class="btn-link">Ver grabación</a>';
-                    if($sesion[3] == 'transcrita') {
-                        echo '<a href="#" class="btn-link">Ver acta transcrita</a>';
-                    } else {
-                        echo '<span class="text-muted">Acta en proceso</span>';
+                // Si no hay sesiones en la BD, mostramos un mensaje
+                if (empty($sesiones)) {
+                    echo '<p class="text-muted">No hay sesiones registradas por el momento.</p>';
+                } else {
+                    foreach($sesiones as $sesion) {
+                        // 1. Lógica de Estado (BD 'transcribed' es 1 o 0)
+                        $estaTranscrita = $sesion['transcribed']; 
+                        $clase = $estaTranscrita ? 'session-grabada' : 'session-pendiente';
+                        
+                        // 2. Formato de Fecha (De YYYY-MM-DD a "28 Nov 2025")
+                        // setlocale(LC_TIME, 'es_ES.UTF-8'); // Opcional si quieres meses en español automático
+                        $fechaFormateada = date("d M Y", strtotime($sesion['date']));
+
+                        // 3. Renderizado de la Tarjeta
+                        echo '<div class="session card '.$clase.'">';
+                        
+                        echo '<h4>Sesión - '.$fechaFormateada.'</h4>';
+                        
+                        // Combinamos descripción y duración como en tu diseño original
+                        echo '<p class="subtitle">';
+                        echo 'Orden del día: ' . htmlspecialchars($sesion['description']);
+                        echo '. Duración estimada: ' . htmlspecialchars($sesion['duration']);
+                        echo '</p>';
+
+                        echo '<div class="session-actions">';
+                        
+                        // Enlace a grabación (agregamos el ID para saber cuál abrir)
+                        echo '<a href="ver_grabacion.php?id='.$sesion['id'].'" class="btn-link">Ver grabación</a>';
+                        
+                        // Condicional para el Acta
+                        if($estaTranscrita) {
+                            // Si tienes el archivo PDF guardado en la BD, úsalo aquí, si no, usa un link genérico
+                            echo '<a href="ver_acta.php?id='.$sesion['id'].'" class="btn-link">Ver acta transcrita</a>';
+                        } else {
+                            echo '<span class="text-muted">Acta en proceso</span>';
+                        }
+                        
+                        echo '</div>'; // Fin actions
+                        echo '</div>'; // Fin card
                     }
-                    echo '</div>';
-                    echo '</div>';
                 }
                 ?>
 
